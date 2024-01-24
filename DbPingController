@@ -1,0 +1,124 @@
+package com.rumango.controller;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.rumango.entity.DatabaseConnectionEntity;
+import com.rumango.service.RequestProcessingService;
+
+/**
+ * @author Admin
+ *
+ */
+@RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*")
+public class DbPingController {
+	Logger logger = LoggerFactory.getLogger(DbPingController.class);
+	@Autowired
+	JdbcTemplate jt;
+
+	@Autowired
+	RequestProcessingService requestProcessingServive;
+
+	@RequestMapping(value = "/dbcheck", method = RequestMethod.POST)
+	public ModelAndView save(@ModelAttribute DatabaseConnectionEntity req) {
+		logger.info("request reached");
+		String responce = requestProcessingServive.dbCheck(req);
+		req.setResponce(responce);
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("db");
+		modelAndView.addObject("req", req);
+		// logger.info(req.getXmlRequest());
+		// processing the request.
+
+		logger.info(responce);
+		return modelAndView;
+	}
+
+//	@GetMapping("/ping/{url}/{driverClassName}/{username}/{password}")
+//	public List<?> pingDataSource(@PathVariable("url") String url,
+//			@PathVariable("driverClassName") String driverClassName, @PathVariable("username") String username,
+//			@PathVariable("password") String password) {
+//		final Logger log = LoggerFactory.getLogger(DbPingController.class);
+//		Connection connection = null;
+//		List<?> results;
+//		try {
+//			Class.forName(driverClassName);
+//
+//			// get the sql server database connection
+//			connection = DriverManager.getConnection(url, username, password);
+//			if (connection != null) {
+//				log.info("connection successfull");
+//				// get all the table
+//
+//				results = entityManager.createNativeQuery("SELECT table_name FROM all_tables ORDER BY table_name ASC")
+//						.getResultList();
+//				log.info("connection successfull" + results.size() + results);
+//				return results;
+//
+//				// return true;
+//			} else {
+//				// results=ArrayList<>();
+//				return null;
+//			}
+//		} catch (ClassNotFoundException e) {
+//			log.info("Exception");
+//			e.printStackTrace();
+//			System.exit(1);
+//		} catch (SQLException e) {
+//			log.info("Exceptio occorn");
+//			e.printStackTrace();
+//		}
+//		return null;
+//
+//	}
+//
+//	@GetMapping("/ping/{url}/{driverClassName}/{username}/{password}/{tablename}")
+//	public List<?> getingColumnBasedOnTable(@PathVariable("url") String url,
+//			@PathVariable("driverClassName") String driverClassName, @PathVariable("username") String username,
+//			@PathVariable("password") String password, @PathVariable("tablename") String tablename) {
+//		final Logger log = LoggerFactory.getLogger(DbPingController.class);
+//		Connection connection = null;
+//		List<?> results;
+//		try {
+//			Class.forName(driverClassName);
+//
+//			// get the sql server database connection
+//			connection = DriverManager.getConnection(url, username, password);
+//			if (connection != null) {
+//				log.info("connection successfull");
+//				// get all the table
+//
+//				results = entityManager.createNativeQuery(
+//						"SELECT table_name, column_name, data_type, data_length FROM USER_TAB_COLUMNS WHERE table_name = '"
+//								+ tablename + "'")
+//						.getResultList();
+//				log.info("connection successfull" + results.size() + results);
+//				return results;
+//
+//				// return true;
+//			} else {
+//				// results=ArrayList<>();
+//				return null;
+//			}
+//		} catch (ClassNotFoundException e) {
+//			log.info("Exception");
+//			e.printStackTrace();
+//			System.exit(1);
+//		} catch (SQLException e) {
+//			log.info("Exceptio occorn");
+//			e.printStackTrace();
+//		}
+//		return null;
+//
+//	}
+
+}
